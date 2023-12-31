@@ -1,0 +1,35 @@
+name: refranero_app
+description: A new Flutter project.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  flip_card: ^0.7.0
+  flutter:
+    sdk: flutter
+  flutter_keyboard_visibility: ^5.4.1
+  auto_size_text: ^3.0.0
+  future_progress_dialog: ^0.2.1
+  flutter_layout_grid: ^2.0.0
+  shared_preferences: ^2.0.12
+  intl: ^0.17.0
+  flutter_local_notifications: ^9.1.0
+  path: ^1.8.0 
+  path_provider: ^2.0.2
+  sqflite: ^2.0.0+3
+  provider: ^6.0.5 # (o la versión más reciente)
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/assets/fondomenu.jpg
+    - lib/assets/iconomenu.png
+    - lib/assets/refranespopulares.jpg
