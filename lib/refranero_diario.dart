@@ -12,6 +12,8 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RefraneroDiario extends StatefulWidget {
+  const RefraneroDiario({super.key});
+
   @override
   _RefraneroDiarioState createState() => _RefraneroDiarioState();
 }
@@ -518,14 +520,14 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
   int refranesCompletados = 0;
   bool mostrarAnuncio = true; // Agrega esta línea junto con otras variables
   List<Widget> corazones = [
-    Icon(Icons.favorite, color: Colors.red),
-    Icon(Icons.favorite, color: Colors.red),
-    Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
   ];
   List<Widget> corazonesRotos = [
-    Icon(Icons.favorite_border, color: Colors.red),
-    Icon(Icons.favorite_border, color: Colors.red),
-    Icon(Icons.favorite_border, color: Colors.red),
+    const Icon(Icons.favorite_border, color: Colors.red),
+    const Icon(Icons.favorite_border, color: Colors.red),
+    const Icon(Icons.favorite_border, color: Colors.red),
   ];
   final int horaDeReinicio = 0; // 0 representa la medianoche (12:00 AM)
   bool refranDiarioCompletado =
@@ -550,7 +552,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final lastCompletionDateMillis = prefs.getInt('last_completion_date') ?? 0;
     if (lastCompletionDateMillis == 0) {
-      return null;
+      return;
     }
 
     final lastCompletionDate =
@@ -576,14 +578,14 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Refrán Diario'),
-            content: Text('Es hora de hacer el refrán diario.'),
+            title: const Text('Refrán Diario'),
+            content: const Text('Es hora de hacer el refrán diario.'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cerrar'),
+                child: const Text('Cerrar'),
               ),
             ],
           );
@@ -593,17 +595,17 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
   }
 
   Future<void> _scheduleDailyNotification() async {
-    final time = Time(8, 0,
+    const time = Time(8, 0,
         0); // Hora en la que deseas mostrar la notificación (por ejemplo, 8:00 AM)
 
-    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'Refranero Diario',
       'Notificación diaria del Refranero',
       importance: Importance.defaultImportance,
     );
-    final iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    const iOSPlatformChannelSpecifics = IOSNotificationDetails();
 
-    final platformChannelSpecifics = NotificationDetails(
+    const platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
@@ -660,8 +662,8 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
 
     // Define los dos colores para alternar
     final List<Color> colores = [
-      Color.fromARGB(255, 18, 4, 82),
-      Color.fromARGB(255, 6, 53, 10),
+      const Color.fromARGB(255, 18, 4, 82),
+      const Color.fromARGB(255, 6, 53, 10),
     ];
 
     // Determina el color actual para el fondo del FlipCard
@@ -674,7 +676,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
       front: Container(
         width: 40,
         height: 40,
-        margin: EdgeInsets.all(4),
+        margin: const EdgeInsets.all(4),
         color: letrasAdivinadas[index]
             ? const Color.fromARGB(255, 12, 112, 15)
             : colorFondo, // Cambia el color del fondo
@@ -700,12 +702,12 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
           ? Container(
               width: 40,
               height: 40,
-              margin: EdgeInsets.all(4),
+              margin: const EdgeInsets.all(4),
               color: colorFondo, // Cambia el color del fondo
               alignment: Alignment.center,
               child: AutoSizeText(
                 character,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                 ),
@@ -713,7 +715,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
                 overflow: TextOverflow.ellipsis,
               ),
             )
-          : Container(
+          : const SizedBox(
               width: 40,
               height: 40,
             ),
@@ -781,7 +783,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
         0); // Cambia 0 por el índice del refrán que desees mostrar inicialmente
 
     // Configura las notificaciones y programa la notificación diaria
-    final settingsAndroid = AndroidInitializationSettings('app_icon');
+    const settingsAndroid = AndroidInitializationSettings('app_icon');
     final settingsIOS = IOSInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -824,7 +826,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
 
     // Si la hora actual es anterior a la hora de reinicio, ajusta la fecha un día atrás
     if (currentTime.isBefore(adjustedLastPlayedTime)) {
-      adjustedLastPlayedTime.subtract(Duration(days: 1));
+      adjustedLastPlayedTime.subtract(const Duration(days: 1));
     }
 
     return adjustedLastPlayedTime;
@@ -844,7 +846,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
   String calcularTiempoRestante() {
     if (lastPlayedTime != null) {
       final currentTime = DateTime.now();
-      final nextPlayTime = lastPlayedTime!.add(Duration(days: 1));
+      final nextPlayTime = lastPlayedTime!.add(const Duration(days: 1));
       final timeDifference = nextPlayTime.difference(currentTime);
 
       if (timeDifference.isNegative) {
@@ -882,14 +884,14 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Tiempo Restante'),
+          title: const Text('Tiempo Restante'),
           content: Text(mensaje),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cerrar'),
+              child: const Text('Cerrar'),
             ),
           ],
         );
@@ -900,7 +902,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
   void mostrarTiempoRestante(BuildContext context) {
     if (lastPlayedTime != null) {
       final currentTime = DateTime.now();
-      final nextPlayTime = lastPlayedTime!.add(Duration(days: 1));
+      final nextPlayTime = lastPlayedTime!.add(const Duration(days: 1));
       final timeDifference = nextPlayTime.difference(currentTime);
 
       if (timeDifference.isNegative) {
@@ -920,14 +922,14 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Tiempo Restante'),
+              title: const Text('Tiempo Restante'),
               content: Text(mensaje),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(); // Cierra el diálogo
                   },
-                  child: Text('Cerrar'),
+                  child: const Text('Cerrar'),
                 ),
               ],
             );
@@ -950,7 +952,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
   }
 
   void _mostrarMensaje(BuildContext context, String mensaje,
-      {bool mostrarBotonSiguiente = false, bool mostrarAnuncioVida = false}) {
+      {bool mostrarBotonSiguiente = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -968,13 +970,13 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
                         context, "¡Has completado todos los refranes!");
                   }
                 },
-                child: Text('Siguiente Refrán'),
+                child: const Text('Siguiente Refrán'),
               ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cerrar'),
+              child: const Text('Cerrar'),
             ),
           ],
         );
@@ -1005,7 +1007,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
           }
 
           if (todasLetrasAdivinadas) {
-            Future.delayed(Duration(milliseconds: 500), () {
+            Future.delayed(const Duration(milliseconds: 500), () {
               setState(() {
                 juegoTerminado = true;
                 mostrarMensajeFelicitacion(); // Llama a la función de felicitación
@@ -1077,7 +1079,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
       final currentTime = DateTime.now();
 
       if (lastPlayedTime == null ||
-          currentTime.difference(lastPlayedTime!) >= Duration(hours: 24)) {
+          currentTime.difference(lastPlayedTime!) >= const Duration(hours: 24)) {
         indiceRefranActual = indice;
         refranOculto = refranes[indiceRefranActual];
         letrasAdivinadas = List.generate(
@@ -1118,9 +1120,9 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
-            Color.fromARGB(255, 68, 42, 7), // Fondo transparente de AppBar
+            const Color.fromARGB(255, 68, 42, 7), // Fondo transparente de AppBar
         elevation: 0, // Sin sombra
-        title: Text(
+        title: const Text(
           'Carrera de refraneros',
           style: TextStyle(fontSize: 18),
         ),
@@ -1128,22 +1130,22 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
           Row(
             children: [
               for (int i = 0; i < vidas; i++)
-                Icon(
+                const Icon(
                   Icons.favorite,
                   color: Colors.red,
                 ),
               for (int i = 0; i < 1 - vidas; i++)
-                Icon(
+                const Icon(
                   Icons.favorite_border,
                   color: Colors.red,
                 ),
             ],
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('lib/assets/fondomenu.jpg'),
             fit: BoxFit.cover,
@@ -1161,16 +1163,16 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
                     final character = refranOculto[index];
                     final isSpace = character == ' ';
                     if (isSpace) {
-                      return SizedBox(width: 40);
+                      return const SizedBox(width: 40);
                     }
                     return buildFlipCard(index);
                   },
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               GridView.builder(
                 shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 10,
                 ),
                 itemCount: 30,
@@ -1181,12 +1183,12 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
                   final isLetterGuessed = letrasCorrectas.contains(letra) ||
                       letrasIncorrectas.contains(letra);
                   final tileColor = isLetterGuessed
-                      ? Color.fromARGB(183, 83, 83, 83).withOpacity(0.9)
-                      : Color.fromARGB(255, 61, 37, 5);
+                      ? const Color.fromARGB(183, 83, 83, 83).withOpacity(0.9)
+                      : const Color.fromARGB(255, 61, 37, 5);
                   final textColor =
                       isLetterGuessed ? Colors.grey : Colors.white;
                   return Container(
-                    margin: EdgeInsets.all(4),
+                    margin: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: tileColor,
                       borderRadius: BorderRadius.circular(10),
@@ -1210,7 +1212,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
                   );
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Column(
@@ -1218,12 +1220,12 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
                     children: [
                       Text(
                         'Intentos restantes: $intentosRestantes',
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         'Correctas: ${letrasCorrectas.join(', ')}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
@@ -1231,7 +1233,7 @@ class _RefraneroDiarioState extends State<RefraneroDiario> {
                       ),
                       Text(
                         'Incorrectas: ${letrasIncorrectas.join(', ')}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.red,
                           fontWeight: FontWeight.bold,

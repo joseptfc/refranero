@@ -20,7 +20,12 @@ dependencies:
   path: ^1.8.0 
   path_provider: ^2.0.2
   sqflite: ^2.0.0+3
-  provider: ^6.0.5 # (o la versión más reciente)
+  provider: ^6.0.5 
+  firebase_core: ^2.4.1
+  firebase_auth: ^4.5.0
+  google_sign_in: ^5.2.1
+  cloud_firestore: ^4.14.0
+  firebase_database: ^10.4.0
   
 dev_dependencies:
   flutter_test:

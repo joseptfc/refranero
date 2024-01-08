@@ -1,35 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: ModoTodosScreen(),
   ));
 }
 
+Future<void> guardarProgreso(
+    String jugadorId, List<Refran> refranesCompletados) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection('jugadores')
+        .doc(jugadorId)
+        .set({
+      'refranesCompletados': refranesCompletados
+          .where((refran) => refran.completado)
+          .map((refran) => refran.id)
+          .toList(),
+    });
+  } catch (e) {
+    print('Error al guardar el progreso: $e');
+  }
+}
+
 final List<Refran> refranesClasicos = [
-  Refran('a', false, Color.fromARGB(255, 68, 42, 7)),
-  Refran('Más vale estar solo que mal acompañado', false,
-      Color.fromARGB(255, 68, 42, 7)),
-  Refran('Perro ladrador poco mordedor', false, Color.fromARGB(255, 68, 42, 7)),
-  Refran('A caballo regalado no le mires el dentado', false,
-      Color.fromARGB(255, 68, 42, 7)),
+  Refran(1, 'a', false, const Color.fromARGB(255, 68, 42, 7)),
+  Refran(2, 'Más vale estar solo que mal acompañado', false,
+      const Color.fromARGB(255, 68, 42, 7)),
+  Refran(3, 'Perro ladrador poco mordedor', false,
+      const Color.fromARGB(255, 68, 42, 7)),
+  Refran(4, 'A caballo regalado no le mires el dentado', false,
+      const Color.fromARGB(255, 68, 42, 7)),
   // Agrega los demás refranes aquí
-  Refran('Sarna con gusto no pica', false, Color.fromARGB(255, 68, 42, 7)),
-  Refran("Atardecer ‘colorao’, viento ‘asegurao’", false,
-      Color.fromARGB(255, 68, 42, 7)),
+  Refran(5, 'Sarna con gusto no pica', false,
+      const Color.fromARGB(255, 68, 42, 7)),
+  Refran(6, "Atardecer ‘colorao’, viento ‘asegurao’", false,
+      const Color.fromARGB(255, 68, 42, 7)),
 ];
 
 class Refran {
+  final int id;
   final String texto;
   bool completado;
   Color color;
 
-  Refran(this.texto, this.completado, this.color);
+  Refran(this.id, this.texto, this.completado, this.color);
 }
 
 class SubmenuRefranesChiste extends StatefulWidget {
+  const SubmenuRefranesChiste({super.key});
+
   @override
   _SubmenuRefranesChisteState createState() => _SubmenuRefranesChisteState();
 }
@@ -39,12 +62,12 @@ class _SubmenuRefranesChisteState extends State<SubmenuRefranesChiste> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Refranes Clasicos'),
-        backgroundColor: Color.fromARGB(
+        title: const Text('Refranes Clasicos'),
+        backgroundColor: const Color.fromARGB(
             255, 68, 42, 7), // Cambia el color de fondo de la AppBar
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
                 'lib/assets/fondomenu.jpg'), // Establece la imagen de fondo
@@ -77,7 +100,7 @@ class _SubmenuRefranesChisteState extends State<SubmenuRefranesChiste> {
                                 refran.color = Colors.green;
                               });
                             },
-                            refranesCompletados: [],
+                            refranesCompletados: const [],
                           ),
                         ),
                       );
@@ -89,12 +112,12 @@ class _SubmenuRefranesChisteState extends State<SubmenuRefranesChiste> {
                         });
                       }
                     },
-                    child: Text('${index + 1}'),
                     style: ElevatedButton.styleFrom(
-                      primary: refran.color,
-                      minimumSize:
-                          Size(40, 40), // Tamaño cuadrado más pequeño del botón
+                      backgroundColor: refran.color,
+                      minimumSize: const Size(
+                          40, 40), // Tamaño cuadrado más pequeño del botón
                     ),
+                    child: Text('${index + 1}'),
                   );
                 },
               ),
@@ -112,7 +135,8 @@ class JuegoRefran extends StatefulWidget {
   final Function actualizarEstado;
   final List<int> refranesCompletados;
 
-  JuegoRefran({
+  const JuegoRefran({
+    super.key,
     required this.refran,
     required this.numeroRefran,
     required this.actualizarEstado,
@@ -166,11 +190,17 @@ class _JuegoRefranState extends State<JuegoRefran> {
 
     widget.actualizarEstado();
 
+    // Obtén el ID del jugador (puedes obtenerlo según tus necesidades)
+    String jugadorId = 'sDP1fMjuWlZrZQXxB3Z1s4sT5m12';
+
+    // Guarda el progreso
+    guardarProgreso(jugadorId, refranesClasicos);
+
     return true;
   }
 
   _JuegoRefranState(this.refranesCompletados) {
-    this.refranesCompletados =
+    refranesCompletados =
         refranesCompletados; // Inicializar la lista en el constructor
   }
 
@@ -282,7 +312,7 @@ class _JuegoRefranState extends State<JuegoRefran> {
           'Has perdido... Vuelve a intentarlo', // Deshabilita el cierre haciendo clic fuera del cuadro de diálogo si no es el mensaje de pérdida
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Resultado"),
+          title: const Text("Resultado"),
           content: Text(mensaje),
           actions: [
             TextButton(
@@ -290,14 +320,14 @@ class _JuegoRefranState extends State<JuegoRefran> {
                 reiniciarJuego();
                 Navigator.of(context).pop();
               },
-              child: Text("Reiniciar"),
+              child: const Text("Reiniciar"),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.pop(context);
               },
-              child: Text("Siguiente"),
+              child: const Text("Siguiente"),
             ),
           ],
         );
@@ -373,7 +403,7 @@ class _JuegoRefranState extends State<JuegoRefran> {
 
       // Verificar si el refrán actual se ha completado
       if (_verificarRefranCompletado()) {
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(const Duration(milliseconds: 500), () {
           setState(() {
             juegoTerminado = true;
 
@@ -430,8 +460,8 @@ class _JuegoRefranState extends State<JuegoRefran> {
 
     // Define los dos colores para alternar
     final List<Color> colores = [
-      Color.fromARGB(255, 18, 4, 82),
-      Color.fromARGB(255, 6, 53, 10),
+      const Color.fromARGB(255, 18, 4, 82),
+      const Color.fromARGB(255, 6, 53, 10),
     ];
 
     // Determina el color actual para el fondo del FlipCard
@@ -442,7 +472,7 @@ class _JuegoRefranState extends State<JuegoRefran> {
       return Container(
         width: 40,
         height: 40,
-        margin: EdgeInsets.all(4),
+        margin: const EdgeInsets.all(4),
         color: letrasAdivinadas[index]
             ? const Color.fromARGB(255, 12, 112, 15)
             : colorFondo,
@@ -466,7 +496,7 @@ class _JuegoRefranState extends State<JuegoRefran> {
       front: Container(
         width: 40,
         height: 40,
-        margin: EdgeInsets.all(4),
+        margin: const EdgeInsets.all(4),
         color: letrasAdivinadas[index]
             ? const Color.fromARGB(255, 12, 112, 15)
             : colorFondo,
@@ -485,12 +515,12 @@ class _JuegoRefranState extends State<JuegoRefran> {
           ? Container(
               width: 40,
               height: 40,
-              margin: EdgeInsets.all(4),
+              margin: const EdgeInsets.all(4),
               color: colorFondo,
               alignment: Alignment.center,
               child: AutoSizeText(
                 character,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                 ),
@@ -498,7 +528,7 @@ class _JuegoRefranState extends State<JuegoRefran> {
                 overflow: TextOverflow.ellipsis,
               ),
             )
-          : Container(
+          : const SizedBox(
               width: 40,
               height: 40,
             ),
@@ -511,22 +541,22 @@ class _JuegoRefranState extends State<JuegoRefran> {
         MediaQuery.of(context).size.height; // Declarar screenHeight aquí
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 68, 42, 7),
+        backgroundColor: const Color.fromARGB(255, 68, 42, 7),
         elevation: 0,
         title: Row(
           children: [
-            Text(
+            const Text(
               'Refrán nº ',
               style: TextStyle(fontSize: 18),
             ),
             Text(
-              '${widget.numeroRefran}', // Muestra el número del refrán aquí
-              style: TextStyle(fontSize: 18),
+              widget.numeroRefran, // Muestra el número del refrán aquí
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back), // Icono de flecha hacia atrás
+          icon: const Icon(Icons.arrow_back), // Icono de flecha hacia atrás
           onPressed: () {
             Navigator.pop(context); // Vuelve al menú principal
           },
@@ -535,22 +565,22 @@ class _JuegoRefranState extends State<JuegoRefran> {
           Row(
             children: [
               for (int i = 0; i < intentosRestantes; i++)
-                Icon(
+                const Icon(
                   Icons.favorite,
                   color: Colors.red,
                 ),
               for (int i = 0; i < 3 - intentosRestantes; i++)
-                Icon(
+                const Icon(
                   Icons.favorite_border,
                   color: Colors.red,
                 ),
             ],
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('lib/assets/fondomenu.jpg'),
             fit: BoxFit.cover,
@@ -560,7 +590,7 @@ class _JuegoRefranState extends State<JuegoRefran> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Wrap(
                 alignment: WrapAlignment.center,
                 children: List.generate(
@@ -569,18 +599,18 @@ class _JuegoRefranState extends State<JuegoRefran> {
                     final character = refranOculto[index];
                     final isSpace = character == ' ';
                     if (isSpace) {
-                      return SizedBox(width: 40);
+                      return const SizedBox(width: 40);
                     }
                     return buildFlipCard(index);
                   },
                 ),
               ),
-              SizedBox(height: 20),
-              Spacer(),
-              Spacer(),
+              const SizedBox(height: 20),
+              const Spacer(),
+              const Spacer(),
               GridView.builder(
                 shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 10,
                 ),
                 itemCount: 30,
@@ -591,12 +621,12 @@ class _JuegoRefranState extends State<JuegoRefran> {
                   final isLetterGuessed = letrasCorrectas.contains(letra) ||
                       letrasIncorrectas.contains(letra);
                   final tileColor = isLetterGuessed
-                      ? Color.fromARGB(183, 83, 83, 83).withOpacity(0.9)
-                      : Color.fromARGB(255, 61, 37, 5);
+                      ? const Color.fromARGB(183, 83, 83, 83).withOpacity(0.9)
+                      : const Color.fromARGB(255, 61, 37, 5);
                   final textColor =
                       isLetterGuessed ? Colors.grey : Colors.white;
                   return Container(
-                    margin: EdgeInsets.all(4),
+                    margin: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: tileColor,
                       borderRadius: BorderRadius.circular(0),
@@ -609,7 +639,8 @@ class _JuegoRefranState extends State<JuegoRefran> {
                         }
                       },
                       style: ButtonStyle(
-                        padding: MaterialStateProperty.all(EdgeInsets.all(0)),
+                        padding:
+                            MaterialStateProperty.all(const EdgeInsets.all(0)),
                       ),
                       child: AutoSizeText(
                         letra,
@@ -623,7 +654,7 @@ class _JuegoRefranState extends State<JuegoRefran> {
                 },
               ),
               SizedBox(height: screenHeight >= 600 ? 20 : 10),
-              Spacer(),
+              const Spacer(),
               Row(
                 children: [
                   Column(
@@ -631,12 +662,12 @@ class _JuegoRefranState extends State<JuegoRefran> {
                     children: [
                       Text(
                         'Intentos restantes: $intentosRestantes',
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         'Correctas: ${letrasCorrectas.join(', ')}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
@@ -644,7 +675,7 @@ class _JuegoRefranState extends State<JuegoRefran> {
                       ),
                       Text(
                         'Incorrectas: ${letrasIncorrectas.join(', ')}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
@@ -664,16 +695,18 @@ class _JuegoRefranState extends State<JuegoRefran> {
 }
 
 class ModoTodosScreen extends StatelessWidget {
+  const ModoTodosScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Historia de Refranero'),
-        backgroundColor: Color.fromARGB(
+        title: const Text('Historia de Refranero'),
+        backgroundColor: const Color.fromARGB(
             255, 68, 42, 7), // Cambiar el color de fondo de la AppBar
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('lib/assets/fondomenu.jpg'),
             fit: BoxFit.cover,
@@ -688,14 +721,14 @@ class ModoTodosScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SubmenuRefranesChiste(),
+                      builder: (context) => const SubmenuRefranesChiste(),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,
-                  shape: CircleBorder(),
-                  primary: Colors.transparent,
+                  backgroundColor: Colors.transparent,
+                  shape: const CircleBorder(),
                 ),
                 child: Container(
                   width: 300,
@@ -703,7 +736,7 @@ class ModoTodosScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Color.fromARGB(
+                      color: const Color.fromARGB(
                           255, 68, 42, 7), // Color del borde marrón
                       width: 2.0, // Ancho del borde delgado
                     ),

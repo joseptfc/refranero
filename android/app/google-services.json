@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "420229068360",
+    "firebase_url": "https://refranero-5e0b2-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "refranero-5e0b2",
+    "storage_bucket": "refranero-5e0b2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420229068360:android:5f010082ebc319633d8a7d",
+        "android_client_info": {
+          "package_name": "com.example.refranero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "420229068360-bf7752vbaotc66a1c3qkkqpm12ddetdf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.refranero",
+            "certificate_hash": "6d1bae5452076d05a261cca426a3e6902c2396c3"
+          }
+        },
+        {
+          "client_id": "420229068360-v414d0bsbujl812h1jh2mi3k7ajmfgg5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN7AEP4guwqf_SuUBLIQh7DYo0tDBE2iQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "420229068360-v414d0bsbujl812h1jh2mi3k7ajmfgg5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "420229068360-20l0ei59bunrbodct4mf4986lsbgpd2o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.refraneroApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

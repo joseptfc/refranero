@@ -4,16 +4,27 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter/services.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:math';
-import 'refranero_diario.dart';
-import 'core_Button.dart'; // Importa el archivo core_button.dart
-import 'modo_historia.dart';
-import 'modo_todo.dart'; // Importa el archivo modo_todo.dart
+import 'core_Button.dart';
+import 'modo_todo.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'login.dart';
 
-void main() {
-  runApp(RefranApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyCN7AEP4guwqf_SuUBLIQh7DYo0tDBE2iQ",
+      appId: "1:420229068360:android:5f010082ebc319633d8a7d",
+      messagingSenderId: "420229068360",
+      projectId: "refranero-5e0b2",
+    ),
+  );
+  runApp(const RefranApp());
 }
 
 class RefranApp extends StatelessWidget {
+  const RefranApp({Key? key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,13 +38,14 @@ class RefranApp extends StatelessWidget {
 }
 
 class PantallaInicio extends StatelessWidget {
+  const PantallaInicio({Key? key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null, // Elimina la AppBar
+      appBar: null,
       body: Stack(
         children: <Widget>[
-          // Fondo de imagen
           Image.asset(
             'lib/assets/fondomenu.jpg',
             fit: BoxFit.cover,
@@ -46,10 +58,10 @@ class PantallaInicio extends StatelessWidget {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MenuSeleccionJuegos(),
+                        builder: (context) => LoginScreen(),
                       ),
                     );
                   },
@@ -59,9 +71,8 @@ class PantallaInicio extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color:
-                            Color.fromARGB(255, 68, 42, 7), // Color del borde
-                        width: 8.0, // Ancho del borde
+                        color: const Color.fromARGB(255, 68, 42, 7),
+                        width: 8.0,
                       ),
                     ),
                     child: ClipOval(
@@ -84,12 +95,14 @@ class PantallaInicio extends StatelessWidget {
 }
 
 class MenuSeleccionJuegos extends StatelessWidget {
+  const MenuSeleccionJuegos({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Selecciona un modo de juego'),
-        backgroundColor: Color.fromARGB(255, 68, 42, 7),
+        title: const Text('Selecciona un modo de juego'),
+        backgroundColor: const Color.fromARGB(255, 68, 42, 7),
       ),
       body: Stack(
         children: <Widget>[
@@ -109,24 +122,24 @@ class MenuSeleccionJuegos extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AdivinaElRefran(),
+                        builder: (context) => const AdivinaElRefran(),
                       ),
                     );
                   },
                 ),
-                SizedBox(height: 60.0),
+                const SizedBox(height: 60.0),
                 buildCoreButton(
                   text: 'Historia de Refranes',
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ModoTodosScreen(),
+                        builder: (context) => const ModoTodosScreen(),
                       ),
                     );
                   },
                 ),
-                SizedBox(height: 60.0),
+                const SizedBox(height: 60.0),
                 buildCoreButton(
                   text: 'Jugar Refranero Diario',
                   onTap: () {
@@ -135,8 +148,8 @@ class MenuSeleccionJuegos extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text("Próximamente"),
-                          content: Text(
+                          title: const Text("Próximamente"),
+                          content: const Text(
                             "¡El Refranero Diario estará disponible próximamente!",
                           ),
                           actions: <Widget>[
@@ -144,7 +157,7 @@ class MenuSeleccionJuegos extends StatelessWidget {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Cerrar"),
+                              child: const Text("Cerrar"),
                             ),
                           ],
                         );
@@ -152,7 +165,7 @@ class MenuSeleccionJuegos extends StatelessWidget {
                     );
                   },
                 ),
-                SizedBox(height: 60.0),
+                const SizedBox(height: 60.0),
                 buildCoreButton(
                   text: 'Salir',
                   onTap: () {
@@ -160,15 +173,15 @@ class MenuSeleccionJuegos extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text("Salir de la aplicación"),
-                          content: Text(
+                          title: const Text("Salir de la aplicación"),
+                          content: const Text(
                               "¿Estás seguro de que deseas salir de la aplicación?"),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text("Cancelar"),
+                              child: const Text("Cancelar"),
                             ),
                             TextButton(
                               onPressed: () {
@@ -176,7 +189,7 @@ class MenuSeleccionJuegos extends StatelessWidget {
                                 SystemChannels.platform
                                     .invokeMethod('SystemNavigator.pop');
                               },
-                              child: Text("Salir"),
+                              child: const Text("Salir"),
                             ),
                           ],
                         );
@@ -200,13 +213,16 @@ Widget buildCoreButton({
   return CoreButton(
     text: text,
     onTap: onTap,
-    buttonColor: Color.fromARGB(255, 68, 42, 7), // Color marrón personalizado
+    buttonColor:
+        const Color.fromARGB(255, 68, 42, 7), // Color marrón personalizado
     width: 200.0, // Ancho personalizado
     height: 48.0, // Alto personalizado
   );
 }
 
 class AdivinaElRefran extends StatefulWidget {
+  const AdivinaElRefran({super.key});
+
   @override
   _AdivinaElRefranState createState() => _AdivinaElRefranState();
 }
@@ -235,14 +251,14 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
   List<GlobalKey<FlipCardState>> cardKeys = [];
   bool mostrarAnuncio = true;
   List<Widget> corazones = [
-    Icon(Icons.favorite, color: Colors.red),
-    Icon(Icons.favorite, color: Colors.red),
-    Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
+    const Icon(Icons.favorite, color: Colors.red),
   ];
   List<Widget> corazonesRotos = [
-    Icon(Icons.favorite_border, color: Colors.red),
-    Icon(Icons.favorite_border, color: Colors.red),
-    Icon(Icons.favorite_border, color: Colors.red),
+    const Icon(Icons.favorite_border, color: Colors.red),
+    const Icon(Icons.favorite_border, color: Colors.red),
+    const Icon(Icons.favorite_border, color: Colors.red),
   ];
   List<int> refranesCompletados = [];
   List<int> refranesPorCompletar = [];
@@ -368,7 +384,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
           }
 
           if (todasLetrasAdivinadas) {
-            Future.delayed(Duration(milliseconds: 500), () {
+            Future.delayed(const Duration(milliseconds: 500), () {
               setState(() {
                 juegoTerminado = true;
                 refranesCompletadosCount++; // Aumenta el contador
@@ -430,26 +446,27 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("¡Felicidades, completaste todos los refranes!"),
-            content: Text("¡Has completado todos los refranes disponibles!"),
+            title: const Text("¡Felicidades, completaste todos los refranes!"),
+            content:
+                const Text("¡Has completado todos los refranes disponibles!"),
             actions: [
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MenuSeleccionJuegos(),
+                      builder: (context) => const MenuSeleccionJuegos(),
                     ),
                   );
                 },
-                child: Text('Volver al menú'),
+                child: const Text('Volver al menú'),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   reiniciarJuego();
                 },
-                child: Text("Reiniciar"),
+                child: const Text("Reiniciar"),
               ),
             ],
           );
@@ -465,7 +482,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("¡Te has quedado sin vidas!"),
+            title: const Text("¡Te has quedado sin vidas!"),
             content: Text(mensaje),
             actions: [
               if (mostrarAnuncioVida)
@@ -473,7 +490,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                   onPressed: () {
                     mostrarAnuncioParaVidaExtra();
                   },
-                  child: Row(
+                  child: const Row(
                     children: [
                       Text("Ver anuncio"),
                       SizedBox(width: 5),
@@ -486,18 +503,18 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                   Navigator.of(context).pop();
                   reiniciarJuego();
                 },
-                child: Text("Reiniciar"),
+                child: const Text("Reiniciar"),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MenuSeleccionJuegos(),
+                      builder: (context) => const MenuSeleccionJuegos(),
                     ),
                   );
                 },
-                child: Text("Salir"),
+                child: const Text("Salir"),
               ),
             ],
           );
@@ -544,21 +561,21 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Ver anuncio para obtener una vida extra"),
-            content:
-                Text("¿Deseas ver un anuncio para obtener una vida extra?"),
+            title: const Text("Ver anuncio para obtener una vida extra"),
+            content: const Text(
+                "¿Deseas ver un anuncio para obtener una vida extra?"),
             actions: [
               TextButton(
                 onPressed: () {
                   mostrarAnuncioParaVidaExtra();
                 },
-                child: Text("Ver Anuncio"),
+                child: const Text("Ver Anuncio"),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text("Cancelar"),
+                child: const Text("Cancelar"),
               ),
             ],
           );
@@ -579,7 +596,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
               // Cerrar la ventana de diálogo
               Navigator.of(context).pop();
             },
-            child: Text("Cerrar"),
+            child: const Text("Cerrar"),
           ),
         );
       } else {
@@ -595,7 +612,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                     nuevoIndice == indiceRefranActual);
                 cambiarRefran(nuevoIndice);
               },
-              child: Text("Siguiente"),
+              child: const Text("Siguiente"),
             ),
           );
         }
@@ -606,7 +623,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                 Navigator.of(context).pop();
                 reiniciarJuego();
               },
-              child: Text("Reiniciar"),
+              child: const Text("Reiniciar"),
             ),
           );
         }
@@ -631,12 +648,12 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
               heightFactor:
                   0.5, // Ajusta la altura del cuadro de diálogo según sea necesario
               child: AlertDialog(
-                title: Text("Resultado"),
+                title: const Text("Resultado"),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(mensaje),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -649,7 +666,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                 actions: actions,
                 elevation: 24.0,
                 backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16),
@@ -673,9 +690,9 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
     setState(() {
       vidas = 3;
       corazones = [
-        Icon(Icons.favorite, color: Colors.red),
-        Icon(Icons.favorite, color: Colors.red),
-        Icon(Icons.favorite, color: Colors.red),
+        const Icon(Icons.favorite, color: Colors.red),
+        const Icon(Icons.favorite, color: Colors.red),
+        const Icon(Icons.favorite, color: Colors.red),
       ];
       hasPerdidoTodasLasVidas = false;
       refranesCompletadosCount = 0; // Reinicia el contador
@@ -693,7 +710,6 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
 
   Widget buildFlipCard(int index) {
     final character = refranOculto[index];
-    final isSpace = character == ' ';
 
     // Separa el refrán en palabras
     final palabras = refranOculto.split(' ');
@@ -716,8 +732,8 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
 
     // Define los dos colores para alternar
     final List<Color> colores = [
-      Color.fromARGB(255, 18, 4, 82),
-      Color.fromARGB(255, 6, 53, 10),
+      const Color.fromARGB(255, 18, 4, 82),
+      const Color.fromARGB(255, 6, 53, 10),
     ];
 
     // Determina el color actual para el fondo del FlipCard
@@ -730,7 +746,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
       front: Container(
         width: 40,
         height: 40,
-        margin: EdgeInsets.all(4),
+        margin: const EdgeInsets.all(4),
         color: letrasAdivinadas[index]
             ? const Color.fromARGB(255, 12, 112, 15)
             : colorFondo, // Cambia el color del fondo
@@ -756,12 +772,12 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
           ? Container(
               width: 40,
               height: 40,
-              margin: EdgeInsets.all(4),
+              margin: const EdgeInsets.all(4),
               color: colorFondo, // Cambia el color del fondo
               alignment: Alignment.center,
               child: AutoSizeText(
                 character,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white,
                 ),
@@ -769,7 +785,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                 overflow: TextOverflow.ellipsis,
               ),
             )
-          : Container(
+          : const SizedBox(
               width: 40,
               height: 40,
             ),
@@ -782,18 +798,18 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
         MediaQuery.of(context).size.height; // Definimos screenHeight
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:
-            Color.fromARGB(255, 68, 42, 7), // Fondo transparente de AppBar
+        backgroundColor: const Color.fromARGB(
+            255, 68, 42, 7), // Fondo transparente de AppBar
         elevation: 0, // Sin sombra
         title: Row(
           children: [
-            Text(
+            const Text(
               'Carrera de refraneros ',
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 15),
             ),
             Text(
-              '${refranesCompletadosCount.toString().padLeft(2, '0')}',
-              style: TextStyle(fontSize: 18),
+              refranesCompletadosCount.toString().padLeft(2, '0'),
+              style: const TextStyle(fontSize: 15),
             ),
           ],
         ),
@@ -801,22 +817,22 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
           Row(
             children: [
               for (int i = 0; i < vidas; i++)
-                Icon(
+                const Icon(
                   Icons.favorite,
                   color: Colors.red,
                 ),
               for (int i = 0; i < 3 - vidas; i++)
-                Icon(
+                const Icon(
                   Icons.favorite_border,
                   color: Colors.red,
                 ),
             ],
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('lib/assets/fondomenu.jpg'),
             fit: BoxFit.cover,
@@ -826,7 +842,8 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 20), // Añade espacio encima de los FlipCard
+              const SizedBox(
+                  height: 20), // Añade espacio encima de los FlipCard
               Wrap(
                 alignment: WrapAlignment.center,
                 children: List.generate(
@@ -835,18 +852,18 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                     final character = refranOculto[index];
                     final isSpace = character == ' ';
                     if (isSpace) {
-                      return SizedBox(width: 40);
+                      return const SizedBox(width: 40);
                     }
                     return buildFlipCard(index);
                   },
                 ),
               ),
-              SizedBox(height: 20),
-              Spacer(),
-              Spacer(), // Este Spacer empujará el teclado hacia abajo
+              const SizedBox(height: 20),
+              const Spacer(),
+              const Spacer(), // Este Spacer empujará el teclado hacia abajo
               GridView.builder(
                 shrinkWrap: true,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 10,
                 ),
                 itemCount: 30,
@@ -857,12 +874,12 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                   final isLetterGuessed = letrasCorrectas.contains(letra) ||
                       letrasIncorrectas.contains(letra);
                   final tileColor = isLetterGuessed
-                      ? Color.fromARGB(183, 83, 83, 83).withOpacity(0.9)
-                      : Color.fromARGB(255, 61, 37, 5);
+                      ? const Color.fromARGB(183, 83, 83, 83).withOpacity(0.9)
+                      : const Color.fromARGB(255, 61, 37, 5);
                   final textColor =
                       isLetterGuessed ? Colors.grey : Colors.white;
                   return Container(
-                    margin: EdgeInsets.all(4),
+                    margin: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: tileColor,
                       borderRadius:
@@ -876,8 +893,8 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                         }
                       },
                       style: ButtonStyle(
-                        padding: MaterialStateProperty.all(
-                            EdgeInsets.all(0)), // Elimina el espaciado interno
+                        padding: MaterialStateProperty.all(const EdgeInsets.all(
+                            0)), // Elimina el espaciado interno
                       ),
                       child: AutoSizeText(
                         letra,
@@ -891,7 +908,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                 },
               ),
 
-              Spacer(), // Esto empujará los elementos hacia abajo
+              const Spacer(), // Esto empujará los elementos hacia abajo
 
               // Mueve los elementos "Intentos restantes," "Correctas," e "Incorrectas" al final
               Row(
@@ -901,12 +918,12 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                     children: [
                       Text(
                         'Intentos restantes: $intentosRestantes',
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         'Correctas: ${letrasCorrectas.join(', ')}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.green,
                           fontWeight: FontWeight.bold,
@@ -914,7 +931,7 @@ class _AdivinaElRefranState extends State<AdivinaElRefran> {
                       ),
                       Text(
                         'Incorrectas: ${letrasIncorrectas.join(', ')}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.red,
                           fontWeight: FontWeight.bold,

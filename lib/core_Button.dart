@@ -6,15 +6,16 @@ class CoreButton extends StatefulWidget {
   final Color? buttonColor;
   final double? width;
   final double? height;
-  final Widget? child; // Agrega el argumento child aquí
+  final Widget? child;
 
   const CoreButton({
+    super.key,
     required this.text,
     this.onTap,
     this.buttonColor,
     this.width,
     this.height,
-    this.child, // Agrega el argumento child aquí
+    this.child,
   });
 
   @override
@@ -80,7 +81,7 @@ class _CoreButtonState extends State<CoreButton>
           child: Center(
             child: Text(
               widget.text,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
